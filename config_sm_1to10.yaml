@@ -1,0 +1,11 @@
+samples:
+  "1": /ngc/projects/gm_ext/valgof/data/Project_sample_1_Normal_Blood_noinfo-WES_v1_noinfo_X-131219_D00140_BC3BJ4ACXX-RHGM_LABKA_TH-GATCAG_L002_0116_snv_germline_raw.haplotype_caller.vcf.gz
+  "2": /ngc/projects/gm_ext/valgof/data/Project_sample_2_Normal_Blood_noinfo-WES_v1_noinfo_X-160826_NS500314_AHHYCWBGXY-RHGM_LABKA_TH_snv_germline_raw.haplotype_caller.vcf.gz
+  "3": /ngc/projects/gm_ext/valgof/data/Project_sample_3_Normal_Blood_noinfo-WES_v1_TruSeqLT_X-170706_NS500314_AHTC77BGX2-RHGM_LABKA_TH_snv_germline_raw.haplotype_caller.vcf.gz
+  "4": /ngc/projects/gm_ext/valgof/data/Project_sample_4_Normal_Blood_noinfo-WES_v1_noinfo_X-161031_NS500314_AHMWMCBGXY-RHGM_LABKA_TH_snv_germline_raw.haplotype_caller.vcf.gz
+  "5": /ngc/projects/gm_ext/valgof/data/Project_sample_5_Normal_Blood_noinfo-WES_v1_noinfo_X-131219_D00140_BC3BJ4ACXX-RHGM_LABKA_TH-GATCAG_0116_snv_germline_raw.haplotype_caller.vcf.gz
+  "6": /ngc/projects/gm_ext/valgof/data/Project_sample_6_Normal_Blood_noinfo-WES_v1_TruSeqLT_X-170201_NS500314_AHG2J7BGX2-RHGM_LABKA_TH_snv_germline_raw.haplotype_caller.vcf.gz
+  "7": /ngc/projects/gm_ext/valgof/data/Project_sample_7_Normal_Blood_noinfo-WGS_v1_Nextera_X-190529_A00559_AHKHCNDSXX-RHGM_LABKA_TH-0045_snv_germline_raw.haplotype_caller.vcf.gz
+  "8": /ngc/projects/gm_ext/valgof/data/Project_sample_8_Normal_Blood_noinfo-WES_v1_noinfo_X-131219_D00140_BC3BJ4ACXX-RHGM_LABKA_TH-GTGGCC_L003_0116_snv_germline_raw.haplotype_caller.vcf.gz
+  "9": /ngc/projects/gm_ext/valgof/data/Project_sample_9_Normal_Blood_noinfo-WES_v1_noinfo_X-160628_NS500314_AHCMHNBGXY-RHGM_LABKA_TH_snv_germline_raw.haplotype_caller.vcf.gz
+  "10": /ngc/projects/gm_ext/valgof/data/Project_sample_10_Normal_Blood_noinfo-WES_v1_TruSeqLT_X-170607_NB501792_AHT27KBGX2-RHGM_LABKA_TH_snv_germline_raw.haplotype_caller.vcf.gz
