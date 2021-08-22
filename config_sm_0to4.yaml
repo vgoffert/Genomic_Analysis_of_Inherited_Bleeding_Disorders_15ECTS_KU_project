@@ -1,0 +1,6 @@
+samples:
+  "0": /ngc/projects/gm_ext/valgof/data/solved/Project_sample_solved_0_Normal_Blood_noinfo-WGS_v1_NexteraDNAFlex_X-210603_A01176_BHCYVYDSX2-RHGM_LABKA_TH-TH00517_snv_germline_raw.haplotype_caller.vcf.gz
+  "1": /ngc/projects/gm_ext/valgof/data/solved/Project_sample_solved_1_Normal_Blood_noinfo-WGS_v1_NexteraUDI_X-191206_A00559_BHVYNJDSXX-RHGM_LABKA_TH-TH00437_0107_snv_germline_raw.haplotype_caller.vcf.gz
+  "2": /ngc/projects/gm_ext/valgof/data/solved/Project_sample_solved_2_Normal_Blood_noinfo-WGS_v1_NexteraDNAFlex_X-210217_A00559_AHWWY5DSXY-RHGM_LABKA_TH-TH00507_snv_germline_raw.haplotype_caller.vcf.gz
+  "3": /ngc/projects/gm_ext/valgof/data/solved/Project_sample_solved_3_Normal_Blood_noinfo-WGS_v1_Nextera_X-190718_A00559_AHLJMMDSXX-RHGM_LABKA_TH-0060_snv_germline_raw.haplotype_caller.vcf.gz
+  "4": /ngc/projects/gm_ext/valgof/data/solved/Project_sample_solved_4_Normal_Blood_noinfo-WGS_v1_Nextera_X-190529_A00559_AHKHCNDSXX-RHGM_LABKA_TH-0045_snv_germline_raw.haplotype_caller.vcf.gz

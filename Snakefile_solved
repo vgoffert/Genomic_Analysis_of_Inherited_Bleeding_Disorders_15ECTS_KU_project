@@ -1,0 +1,128 @@
+### run Snakemake annotation and filtering on samples, separate folders
+configfile: "/ngc/projects/gm_ext/valgof/scriptos/solved/config_sm_0to4.yaml"
+SAMPLES = ["0", "1", "2", "3", "4"]
+
+def get_annotation_input(wildcards):
+    return config["samples"][wildcards.sample]
+
+rule all:
+    input:
+        expand("/ngc/projects/gm_ext/valgof/results/project_sample/solved/project_sample_{sample}/genesfiltered{sample}.tsv", sample=SAMPLES)
+
+## REMEMBER: annotates automatically on GRCh37, not 38. To specify: --assembly GRCh38
+rule annotate:
+    input:
+        vep_config = "/ngc/projects/gm_ext/valgof/scriptos/vep/vep_config.cfg",
+        sample = get_annotation_input
+    output:
+        "/ngc/projects/gm_ext/valgof/results/project_sample/solved/project_sample_{sample}/annotated_{sample}.vcf.gz"
+        # stat="/ngc/projects/gm_ext/valgof/results/project_sample/solved/project_{sample}/STATS_{sample}.tsv"
+    threads: 10
+    run:
+        shell("""
+        vep \
+        --input_file {input.sample} \
+        --output_file {output} \
+        --fork 14 \
+        --offline \
+        --cache \
+        --config {input.vep_config} \
+        --format vcf \
+        --everything \
+        --no_escape \
+        --failed 1 \
+        --distance 500 \
+        --no_stats \
+        --vcf \
+        --compress_output bgzip \
+        --force
+        """)
+
+rule filter_depth:
+    input:
+        "/ngc/projects/gm_ext/valgof/results/project_sample/solved/project_sample_{sample}/annotated_{sample}.vcf.gz"
+    output:
+        "/ngc/projects/gm_ext/valgof/results/project_sample/solved/project_sample_{sample}/depth_filtered{sample}.vcf.gz"
+    threads: 10
+    run:
+        shell("bcftools filter -i'INFO/DP>10' {input}| bgzip -c > {output}")
+
+
+
+rule filter_AF_and_consqs:
+    input:
+        "/ngc/projects/gm_ext/valgof/results/project_sample/solved/project_sample_{sample}/depth_filtered{sample}.vcf.gz"
+    output:
+        "/ngc/projects/gm_ext/valgof/results/project_sample/solved/project_sample_{sample}/conseqs_filtered{sample}.vcf"
+    threads: 10
+    run:
+        shell("""filter_vep \
+        --input_file {input} \
+        --output_file {output}\
+        --gz \
+        --format vcf \
+        --filter \
+        "(gnomADg_AF < 0.02 or not gnomADg_AF) and (gnomAD_AF < 0.02 or not gnomAD_AF) \
+        and Consequence is not synonymous_variant \
+        and Consequence is not intron_variant \
+        and Consequence match not intergenic \
+        and Consequence match not intragenic \
+        and Consequence is not upstream_gene_variant \
+        and Consequence is not downstream_gene_variant \
+        and BIOTYPE match not pseudogene \
+        and Consequence is not intron_variant&non_coding_transcript_variant \
+        and Consequence is not regulatory_region_variant \
+        and Consequence is not 3_prime_UTR_variant&NMD_transcript_variant \
+        and Consequence is not 3_prime_UTR_variant \
+        and Consequence is not 5_prime_UTR_variant&NMD_transcript_variant \
+        and Consequence is not 5_prime_UTR_variant \
+        and Consequence is not non_coding_transcript_exon_variant \
+        and Consequence is not splice_region_variant&3_prime_UTR_variant&NMD_transcript_variant \
+        and Consequence is not splice_region_variant&intron_variant&NMD_transcript_variant \
+        and Consequence is not splice_region_variant&intron_variant&non_coding_transcript_variant \
+        and Consequence is not splice_region_variant&non_coding_transcript_exon_variant \
+        and Consequence is not synonymous_variant&NMD_transcript_variant \
+        and Consequence is not TF_binding_site_variant \
+        and Consequence is not intron_variant&NMD_transcript_variant" \
+        --only_matched \
+        --force_overwrite
+        """)
+
+
+rule bgzip1:
+    input:
+        "/ngc/projects/gm_ext/valgof/results/project_sample/solved/project_sample_{sample}/conseqs_filtered{sample}.vcf"
+    output:
+        "/ngc/projects/gm_ext/valgof/results/project_sample/solved/project_sample_{sample}/conseqs_filtered{sample}.vcf.gz"
+    threads: 10
+    run:
+        shell("bgzip {input} -c > {output}")
+
+
+rule filter_isth:
+    input:
+        file="/ngc/projects/gm_ext/valgof/results/project_sample/solved/project_sample_{sample}/conseqs_filtered{sample}.vcf.gz",
+        bed="/ngc/projects/gm_ext/valgof/data/genelocations.bed"
+    output:
+        "/ngc/projects/gm_ext/valgof/results/project_sample/solved/project_sample_{sample}/genesfiltered{sample}.recode.vcf"
+    threads: 10
+    run:
+        shell("vcftools --gzvcf {input.file} --bed {input.bed} --out /ngc/projects/gm_ext/valgof/results/project_sample/solved/project_sample_{wildcards.sample}/genesfiltered{wildcards.sample} --recode --keep-INFO-all >> {output}")
+
+
+use rule bgzip1 as bgzip2 with:
+    input:
+        "/ngc/projects/gm_ext/valgof/results/project_sample/solved/project_sample_{sample}/genesfiltered{sample}.recode.vcf"
+    output:
+        "/ngc/projects/gm_ext/valgof/results/project_sample/solved/project_sample_{sample}/genesfiltered{sample}.vcf.gz"
+
+
+rule vcf2tsv:
+    input:
+        "/ngc/projects/gm_ext/valgof/results/project_sample/solved/project_sample_{sample}/genesfiltered{sample}.vcf.gz"
+    output:
+        "/ngc/projects/gm_ext/valgof/results/project_sample/solved/project_sample_{sample}/genesfiltered{sample}.tsv"
+    threads: 10
+    run:
+        shell("""echo -e "CHROM\tPOS\tREF\tALT\tQUAL\tAF\tDP\tAD\tGT\t$(bcftools +split-vep -l {input} | cut -f 2 | tr '\n' '\t' | sed 's/\t$//')" > {output}""")
+        shell("""bcftools +split-vep -f '%CHROM\t%POS\t%REF\t%ALT\t%QUAL\t%AF\t%DP\t%AD\t%GT\t%CSQ\n' -d -A tab {input} >> {output}""")
